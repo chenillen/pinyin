@@ -1,11 +1,29 @@
-#本类实现汉字转拼音功能，由perl的Lingua::Han::PinYin包port而来(包括UniHan的数据)。
+# 本类实现汉字转拼音功能，由perl的Lingua::Han::PinYin包port而来(包括UniHan的数据)。<br/>
 #
-#由于实际需要只实现utf-8版本，需要gbk等转拼音的请使用Iconv自行转换。
+# 由于实际需要只实现utf-8版本，需要gbk等转拼音的请使用Iconv自行转换。<br/>
 # 
-#感谢Lingua::Han::PinYin原作者(http://www.fayland.org/journal/Han-PinYin.html)的工作.
+# 感谢Lingua::Han::PinYin原作者(http://www.fayland.org/journal/Han-PinYin.html)的工作. <br/>
 #
-#Thanks for H.J.Leochen ( http://www.upulife.com ) work on coding, I just move it to a gem and plugin for rails usage
-#License::   MIT                                                                                                     
+#Author H.J.Leochen ( http://www.upulife.com ) work on coding, I just move it to a gem and plugin for rails usage <br/>
+#License::   MIT <br/>                                                                                                     
+#Gem builder:  chenillen (http://allenchan.com.cn)<br/>
 
-#Author:  chenillen (http://allenchan.com.cn)
 
+= Pinyin (permlink)- Convert Chinese Characters to Pinyin letters, better usage in Rails as gem or plugins
+== Install
+  $ sudo gem install Pinyin --source http://gem.github.com
+ 
+= irb Usage
+  require 'rubygems'
+  require 'pinyin'
+  py = Pinyin.new
+  py.to_permlink("中国")
+==>> zhong-guo
+  py.to_pinyin_abbr("中国")
+==>> zg
+
+# Bugs
+
+1. 多音字不知道怎么处理
+
+2. 英文中文夹杂的string中间英文和中文字相间的会没有separator

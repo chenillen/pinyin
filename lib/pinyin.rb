@@ -1,56 +1,50 @@
 require 'singleton'
 
-module Pinyin
-  VERSION = '0.1.0'
+class Pinyin
   
-  def self.included(base)
-      base.extend(ClassMethods)
-  end
-  #单例模式，使用 PinYin.instance 实例
-  def self.initialize
-		fn = File.join(File.dirname(File.expand_path(__FILE__)),'../dict/Mandarin.dat')
+  # Initialize using Pinyin.new
+  # py = Pinyin.new
+  def initialize
+		ma = File.join(File.dirname(File.expand_path(__FILE__)),'../dict/Mandarin.dat')
 		@codes = {}
-		File.readlines(fn).each do |line|
+		File.readlines(ma).each do |line|
 			nv = line.split(/\s/)
 			@codes[nv[0]] = nv[1]
 		end
 	end
-	
-  module ClassMethods
+  
+	# Generating permlink using '-' split
+	# Show the permlink: Interesting-Ruby-Tidbits-That-Dont-Need-Separate-Posts-17
+	# You can also pass a split symbol to_permlink(str, '~')
+	def to_permlink(str)
+		str_to_pinyin(str,'-')
+	end
 
-  	#permlink固定分隔符,
-  	#结果样式：Interesting-Ruby-Tidbits-That-Dont-Need-Separate-Posts-17
-  	#
-  	def to_permlink(str)
-  		str_to_pinyin(str,'-')
-  	end
+	# Generating shorter permlink with first letter of each charater
+	# Like: zgyh stands for "中国银行"
+	def to_pinyin_abbr(str)
+		str_to_pinyin(str,'',false,true)
+	end
 
-  	#全部取首字母。 eg. ldh 刘德华
-  	def to_pinyin_abbr(str)
-  		str_to_pinyin(str,'',false,true)
-  	end
+	#第一个字取全部，后面首字母.名称缩写。eg. liudh 刘德华
+	def to_pinyin_abbr_else(str)
+		str_to_pinyin(str,'',true,nil) 
+	end
 
-  	#第一个字取全部，后面首字母.名称缩写。eg. liudh 刘德华
-  	def to_pinyin_abbr_else(str)
-  		str_to_pinyin(str,'',true,nil) #后面那个参数已经没有影响了。
-  	end
+	#通用情况 tone为取第几声的标识。eg. ni3hao3zhong1guo2
+	def to_pinyin(str,separator='',tone=false)
+		str_to_pinyin(str,separator,false,false,tone)
+	end  	
+  	
+  	
+  # Private Methods Started...
+  private
 
-  	#通用情况 tone为取第几声的标识。eg. ni3hao3zhong1guo2
-  	def to_pinyin(str,separator='',tone=false)
-  		str_to_pinyin(str,separator,false,false,tone)
-  	end
+  def get_value(code)
+  	@codes[code]
   end
-  	
-  	
-  	
-  	# Private Methods Started...
-  	private
 
-  	def get_value(code)
-  		@codes[code]
-  	end
-
-  	def str_to_pinyin(str,separator='',abbr_else=false,abbr=false,tone=false)
+  def str_to_pinyin(str,separator='',abbr_else=false,abbr=false,tone=false)
   		res = []
   		str.unpack('U*').each_with_index do |t,idx|
   			code = sprintf('%x',t).upcase
@@ -76,9 +70,6 @@ module Pinyin
   		else
   			return res.join('')
   		end
-  	end
-  
-  
+    end
 end
-
 	
